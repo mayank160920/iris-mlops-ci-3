@@ -1,0 +1,6 @@
+pandas
+scikit-learn
+pytest
+dvc-gs
+google-cloud-aiplatform
+joblib
