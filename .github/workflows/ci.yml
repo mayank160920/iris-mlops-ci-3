@@ -13,6 +13,8 @@ permissions:
 jobs:
   test-and-report:
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
