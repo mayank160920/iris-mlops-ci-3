@@ -1,5 +1,6 @@
 # MLflow
 mlruns/
+mlartifacts/
 
 # Existing ignores
 .venv/
