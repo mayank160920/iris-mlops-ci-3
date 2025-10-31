@@ -41,7 +41,7 @@ def test_model_accuracy():
     # Make predictions and calculate accuracy
     predictions = model.predict(X_test)
     accuracy = metrics.accuracy_score(predictions, y_test)
-    report = metrics.classification_report(y_test, predictions)
+    report = str(metrics.classification_report(y_test, predictions,output_dict=True))
     model_info = f"Model: {REGISTERED_MODEL_NAME}, Version: {latest_model_info.version}"
 
     # Save accuracy report to a file
