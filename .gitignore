@@ -1,3 +1,8 @@
+# MLflow
+mlruns/
+mlartifacts/
+
+# Existing ignores
 .venv/
 __pycache__/
 *.pyc
@@ -7,4 +12,3 @@ __pycache__/
 gcloud-creds.json
 .DS_Store
 /data.csv
-/model.joblib
