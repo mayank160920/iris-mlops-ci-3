@@ -13,12 +13,20 @@ def test_model_accuracy():
     # Set MLflow tracking URI
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     mlflow.set_registry_uri(MLFLOW_TRACKING_URI)
+    client = mlflow.tracking.MlflowClient()
+
+    # Load the latest version of the registered model
+    try:
+        latest_model_info = client.get_latest_versions(REGISTERED_MODEL_NAME)[0]
+        print(f"Loaded model '{REGISTERED_MODEL_NAME}' version {latest_model_info.version} from registry.")
+    except Exception as e:
+        sys.exit(f"❌ Failed to get latest model version for '{REGISTERED_MODEL_NAME}': {e}")
 
     # Load the model from MLflow Model Registry
     try:
-        model = mlflow.sklearn.load_model(f"models:/{REGISTERED_MODEL_NAME}/latest")
+        model = mlflow.sklearn.load_model(f"models:/{REGISTERED_MODEL_NAME}/{latest_model_info.version}")
     except Exception as e:
-        sys.exit(f"❌ Failed to load model '{REGISTERED_MODEL_NAME}/latest': {e}")
+        sys.exit(f"❌ Failed to load model '{REGISTERED_MODEL_NAME}/{latest_model_info.version}': {e}")
 
     # Check if test data file exists
     if not os.path.exists("data.csv"):
@@ -34,10 +42,12 @@ def test_model_accuracy():
     predictions = model.predict(X_test)
     accuracy = metrics.accuracy_score(predictions, y_test)
     report = metrics.classification_report(y_test, predictions)
+    model_info = f"Model: {REGISTERED_MODEL_NAME}, Version: {latest_model_info.version}"
 
     # Save accuracy report to a file
     with open("report.txt", "w") as f:
-        f.write(f"Model Accuracy: {accuracy:.3f}\n\n{report}")
+        f.write(f"# {model_info}\n\n")
+        f.write(f"```\nModel Accuracy: {accuracy:.3f}\n\n{report}\n```")
 
     assert accuracy > 0.9, f"Model accuracy {accuracy:.2f} is below threshold."
     print(f"Model accuracy {accuracy:.3f} is above threshold.")
