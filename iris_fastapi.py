@@ -3,8 +3,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import pandas as pd
+from datetime import datetime
 
 app = FastAPI(title="🌸 Iris Classifier API")
+launch_time = datetime.now()
 
 # Load model
 model = joblib.load("model.joblib")
@@ -18,7 +20,10 @@ class IrisInput(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Iris Classifier API!"}
+    return {
+        "message": "Welcome to the Iris Classifier API!", 
+        "launch_time": launch_time
+    }
 
 @app.post("/predict/")
 def predict_species(data: IrisInput):
