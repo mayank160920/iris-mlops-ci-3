@@ -5,12 +5,9 @@
 # Build a Decision Tree model on iris data
 
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
-from pandas.plotting import parallel_coordinates
-from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
-import pickle
 import joblib
 import sys
 import os
