@@ -3,8 +3,7 @@ name: MLOps CD Pipeline
 on:
   push:
     branches: [dev, main]
-  pull_request:
-    branches: [dev] # Temporarily keep PRs to dev for testing
+  workflow_dispatch:
 
 env:
   PROJECT_ID: buoyant-country-473106-a3
