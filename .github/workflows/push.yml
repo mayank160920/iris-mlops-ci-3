@@ -31,6 +31,7 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
         with:
+          install_components: 'gke-gcloud-auth-plugin'
           project_id: ${{ env.PROJECT_ID }}
 
       - name: Configure Docker for GAR
