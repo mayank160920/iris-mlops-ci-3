@@ -3,30 +3,21 @@ import sys
 import pandas as pd
 from sklearn import metrics
 from sklearn.model_selection import train_test_split
-import mlflow
+import joblib
 
-# Define the model name used in the registry
-REGISTERED_MODEL_NAME = os.getenv("REGISTERED_MODEL_NAME", "IrisDecisionTreeModel")
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:8100")
+MODEL_FILE = os.getenv("MODEL_FILE", "model.joblib")
+
 
 def test_model_accuracy():
-    # Set MLflow tracking URI
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    mlflow.set_registry_uri(MLFLOW_TRACKING_URI)
-    client = mlflow.tracking.MlflowClient()
+    # Load model from local joblib file (used in CI/local runs)
+    if not os.path.exists(MODEL_FILE):
+        sys.exit(f"❌ Missing model file: {MODEL_FILE}. Run training to produce it or set MODEL_FILE env var.")
 
-    # Load the latest version of the registered model
     try:
-        latest_model_info = client.get_latest_versions(REGISTERED_MODEL_NAME)[0]
-        print(f"Loaded model '{REGISTERED_MODEL_NAME}' version {latest_model_info.version} from registry.")
+        model = joblib.load(MODEL_FILE)
+        print(f"Loaded local model from {MODEL_FILE}")
     except Exception as e:
-        sys.exit(f"❌ Failed to get latest model version for '{REGISTERED_MODEL_NAME}': {e}")
-
-    # Load the model from MLflow Model Registry
-    try:
-        model = mlflow.sklearn.load_model(f"models:/{REGISTERED_MODEL_NAME}/{latest_model_info.version}")
-    except Exception as e:
-        sys.exit(f"❌ Failed to load model '{REGISTERED_MODEL_NAME}/{latest_model_info.version}': {e}")
+        sys.exit(f"❌ Failed to load model from '{MODEL_FILE}': {e}")
 
     # Check if test data file exists
     if not os.path.exists("data.csv"):
@@ -42,7 +33,7 @@ def test_model_accuracy():
     predictions = model.predict(X_test)
     accuracy = metrics.accuracy_score(predictions, y_test)
     report = str(metrics.classification_report(y_test, predictions,output_dict=True))
-    model_info = f"Model: {REGISTERED_MODEL_NAME}, Version: {latest_model_info.version}"
+    model_info = f"Local model file: {MODEL_FILE}"
 
     # Save accuracy report to a markdown file (so CI can include it nicely)
     REPORT_FILE = os.getenv("MODEL_REPORT_FILE", "model_report.md")

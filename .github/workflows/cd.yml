@@ -13,6 +13,7 @@ env:
   GKE_CLUSTER: iris-cluster
   GKE_ZONE: us-central1
   DEPLOYMENT_NAME: iris-api
+  MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
 
 jobs:
   deploy:
@@ -35,6 +36,16 @@ jobs:
 
       - name: Configure Docker for GAR
         run: gcloud auth configure-docker $GAR_LOCATION
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Download Model Artifact from MLflow
+        run: |
+          pip3 install mlflow joblib
+          python3 load_model_from_mlflow.py
 
       - name: Build Docker image
         run: |
