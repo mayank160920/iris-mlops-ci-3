@@ -7,7 +7,7 @@ on:
     branches: [dev] # Temporarily keep PRs to dev for testing
 
 env:
-  PROJECT_ID: your-gcp-project-id
+  PROJECT_ID: buoyant-country-473106-a3
   GAR_LOCATION: us-central1-docker.pkg.dev
   GAR_REPO: iris-repo
   IMAGE_NAME: iris-api
