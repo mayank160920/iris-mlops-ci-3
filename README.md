@@ -1,4 +1,4 @@
-# Graded Assignment — Week 4
+# Graded Assignment — Week 6
 ## File Details
 
 * **`train.py`**
