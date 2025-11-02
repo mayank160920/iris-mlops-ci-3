@@ -1,11 +1,9 @@
 name: MLOps CI Pipeline
 
 on:
-  push:
-    branches: [dev, main]
   pull_request:
-    branches: [main]
-
+    branches: [dev, main]
+  
 permissions:
   contents: write
   pull-requests: write
@@ -13,6 +11,8 @@ permissions:
 jobs:
   test-and-report:
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -40,8 +40,11 @@ jobs:
       - name: Pull artifacts from DVC
         run: dvc pull
 
-      - name: Run Pytest and Save Report
-        run: pytest --maxfail=1 --disable-warnings -q > report.txt
+      - name: Train Model and Log with MLflow and Save Model Locally
+        run: python3 train.py
+
+      - name: Run Pytest
+        run: pytest --maxfail=1 --disable-warnings -q
 
       - name: Create CML report on Pull Request
         if: github.event_name == 'pull_request'
@@ -53,8 +56,21 @@ jobs:
           echo "**Commit:** \`${{ github.sha }}\`" >> cml_report.md
           echo "" >> cml_report.md
           echo "### 🧪 Test Summary" >> cml_report.md
-          cat report.txt >> cml_report.md
+          # include pytest output if present (report.txt may not exist when not redirecting)
+          if [ -f report.txt ]; then
+            cat report.txt >> cml_report.md
+          else
+            echo "(pytest output not captured to report.txt)" >> cml_report.md
+          fi
+          # include a prettier model evaluation report if the test produced one
+          if [ -f model_report.md ]; then
+            echo "" >> cml_report.md
+            echo "### 📄 Model Evaluation Report" >> cml_report.md
+            echo "" >> cml_report.md
+            cat model_report.md >> cml_report.md
+          fi
           echo "" >> cml_report.md
           echo "---" >> cml_report.md
           echo "_Generated automatically by CML_" >> cml_report.md
           cml comment create cml_report.md
+

@@ -4,3 +4,6 @@ pytest
 dvc-gs
 google-cloud-aiplatform
 joblib
+mlflow
+fastapi
+uvicorn
