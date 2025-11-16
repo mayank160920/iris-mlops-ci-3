@@ -9,3 +9,5 @@ gcloud-creds.json
 /data.csv
 /model.joblib
 /data
+/mlruns/
+/mlartifacts/
