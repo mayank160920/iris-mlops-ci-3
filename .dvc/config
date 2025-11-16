@@ -1,4 +1,0 @@
-[core]
-    remote = gcp-store
-['remote "gcp-store"']
-    url = gs://mlops-course-week1-001/dvc_store
