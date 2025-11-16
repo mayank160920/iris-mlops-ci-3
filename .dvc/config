@@ -1,0 +1,2 @@
+['remote "dvc_store_week_8"']
+    url = gs://mlops-course-week1-001/dvc_store_week_8

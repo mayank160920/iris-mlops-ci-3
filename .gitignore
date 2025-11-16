@@ -8,3 +8,4 @@ gcloud-creds.json
 .DS_Store
 /data.csv
 /model.joblib
+/data
