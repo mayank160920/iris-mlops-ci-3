@@ -1,17 +1,14 @@
-# Graded Assignment — Week 4
+# Graded Assignment — Week 8
 ## File Details
 
-* **`train.py`**
-  Reads the dataset and trains the model
+* **`main.py`**
+  The executable python file containing the required logic.
 
 * **`.gitignore`**
   Files which are ignored by git
 
 * **`requirements.txt`**
   Python dependencies
-  
-* **`setup.ipynb`**
-  Python notebook containing the setup commands
-  
-* **`tests/*`**
-  Contains test files
+
+* **`data/`**
+  Folder containing the dataset files
